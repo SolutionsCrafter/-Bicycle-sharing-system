@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">BicycleApp</string>
+    <string name="login">Login</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="forgot_your_password">Forgot Your Password?</string>
+    <string name="password">Password :</string>
+    <string name="username">Username :</string>
+    <string name="signup">SignUp</string>
+    <string name="contact_number">Contact number :</string>
+    <string name="title_activity_home">Home</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="logout">Logout</string>
+    <string name="profile">Profile</string>
+    <string name="home">Home</string>
+    <string name="national_id_number">National ID number :</string>
+    <string name="email">Email</string>
+    <string name="password_">Password :</string>
+    <string name="click_to_login">Click to login</string>
+    <string name="address">Address :</string>
+    <string name="camera_permission_is_required">Camera permission is required</string>
+    <string name="pedal_your_way_to_a_healthier_you_and_a_greener_earth_today">pedal_your_way_to_a_healthier_you_and_a_greener_earth_today</string>
+    <string name="pedal_your_way_nto_a_healthier_you_and_a_greener_nearth_today">pedal_your_way\nto_a_healthier_you and_a_greener \nearth_today</string>
+    <string name="available_bikes">Available Bikes:</string>
+    <string name="available_bikes_">Available Bikes:</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="payment_details">Payment  details</string>
+    <string name="get_a_bike">Get a bike</string>
+    <string name="take_a_ride">Take a ride</string>
+</resources>

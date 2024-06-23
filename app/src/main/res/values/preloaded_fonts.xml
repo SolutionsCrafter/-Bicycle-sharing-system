@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item></item>
+        <item>@font/</item>
+        <item>@font/acme</item>
+        <item>@font/alfa_slab_one</item>
+        <item>@font/arbutus</item>
+        <item>@font/archivo_black</item>
+        <item>@font/bevan</item>
+        <item>@font/black_han_sans</item>
+        <item>@font/black_ops_one</item>
+        <item>@font/bowlby_one</item>
+        <item>@font/candal</item>
+        <item>@font/carter_one</item>
+        <item>@font/chango</item>
+        <item>@font/chelsea_market</item>
+        <item>@font/cherry_cream_soda</item>
+        <item>@font/fugaz_one</item>
+        <item>@font/holtwood_one_sc</item>
+        <item>@font/luckiest_guy</item>
+        <item>@font/pacifico</item>
+        <item>@font/poppins_bold</item>
+        <item>@font/poppins_thin</item>
+    </array>
+</resources>

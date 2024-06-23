@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "771159837145",
+    "project_id": "cycle-share-mobile-app",
+    "storage_bucket": "cycle-share-mobile-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:771159837145:android:231e32e96a8544246ab1c8",
+        "android_client_info": {
+          "package_name": "com.example.bicycleapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBq5m0FDcYx-nTY3yTC3uaagHVl4jBAGgQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
