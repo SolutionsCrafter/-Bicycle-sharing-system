@@ -102,4 +102,6 @@ public class MainActivity extends AppCompatActivity {
         new Handler().postDelayed(() -> backPressedCount = 0, 2000); // Reset counter after 2 seconds
     }
 
+    //Test comment
+
 }
