@@ -22,13 +22,18 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 // This is the Home page
 
@@ -40,6 +45,9 @@ public class Payment extends AppCompatActivity {
     FirebaseFirestore fStore;
     String userID ;
     boolean paymentInfoSaved;
+    private String QR_Value;
+    private boolean state;
+    private FirebaseDatabase fDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +81,7 @@ public class Payment extends AppCompatActivity {
         // Access a Cloud Firestore instance from your Activity
         fStore = FirebaseFirestore.getInstance();
         userID = fAuth.getCurrentUser().getUid();
+        fDatabase = FirebaseDatabase.getInstance();
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -167,9 +176,9 @@ public class Payment extends AppCompatActivity {
         PaymentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    Intent intent = new Intent(Payment.this,com.example.bicycleapp.PaymentGateway.class);
-                    startActivity(intent);
-                    finish();
+                Intent intent = new Intent(Payment.this,com.example.bicycleapp.PaymentGateway.class);
+                startActivity(intent);
+                finish();
             }
         });
 
@@ -177,9 +186,13 @@ public class Payment extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (paymentInfoSaved){
-                    Intent intent = new Intent(Payment.this,com.example.bicycleapp.HomePage.class);
-                    startActivity(intent);
-                    finish();
+                    IntentIntegrator intentIntegrator = new IntentIntegrator(Payment.this);
+                    intentIntegrator.setOrientationLocked(true); // This should lock the orientation
+                    intentIntegrator.setPrompt("Scanning");
+                    intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+                    intentIntegrator.initiateScan();
+
+
                 }
                 else {
                     Toast.makeText(Payment.this,"Please save payment details!",Toast.LENGTH_SHORT).show();
@@ -197,5 +210,85 @@ public class Payment extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (intentResult != null) {
+            String contents = intentResult.getContents();
+            if (contents != null) {
+                QR_Value = contents;
+                // Check QR code validity
+                state = QR_Validity(QR_Value);
+                if (state) {    // If QR code is valid
+                    // Send data into firebase
+                    //updateFirebaseStations(QR_Value);   //Update station
+                    updateFirebaseRealtimeDatabaseFromApp(QR_Value);   //Update realtime database
+                    //updateFirebaseCurrentStates(QR_Value);  //Update current states
+                    //startLocationUpdates(); // Start location updates
+                    //getCurrentTime(); // Update start time
+                } else {
+                    Toast.makeText(Payment.this, "Invalid QR code", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(this, "Scan failed!", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    // Check QR value validity
+    private boolean QR_Validity(String input) {
+        boolean state = false;
+        // Check if the string has at least 2 characters
+        if (input.length() == 4) {
+            // Extract the first 2 characters
+            String firstThreeChars = input.substring(0, 3);
+            // Compare with "1CS"
+            if (firstThreeChars.equals("1CS")) {
+                state = true;
+            } else {
+                state = false;
+            }
+        } else {
+            state = false;
+        }
+        return state;
+    }
+
+    // Update realtime database from mobile app
+    private void updateFirebaseRealtimeDatabaseFromApp(String value) {
+        // Extract station number from the 4th character of QR code data
+        int stationNumber = Character.getNumericValue(value.charAt(3)); // Assuming 4th character
+
+        // Update the station value based on station number (directly update Station1 or Station2)
+        String stationId = "Door" + stationNumber;
+
+        int newValue = 0; // Replace with your logic to determine the new value (e.g., 0 for no bicycles)
+
+        // Update the Firebase Realtime Database
+        fDatabase.getReference().child(stationId).setValue(newValue)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // Successfully updated the database
+                        Toast.makeText(getApplicationContext(), "Update Door" + stationId + " successful", Toast.LENGTH_SHORT).show();
+                        // Add any further actions upon success, if needed
+                        Intent intent2 = new Intent(Payment.this,com.example.bicycleapp.HomePage.class);
+                        startActivity(intent2);
+                        finish();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Failed to update the database
+                        Toast.makeText(getApplicationContext(), "Failed to update Door" + stationId, Toast.LENGTH_SHORT).show();
+                        // Add any error handling code here
+                    }
+                });
+    }
+
 
 }
