@@ -27,6 +27,9 @@
         android:theme="@style/Theme.BicycleApp"
         tools:targetApi="31">
         <activity
+            android:name=".AboutUp"
+            android:exported="false" />
+        <activity
             android:name=".OnRide"
             android:exported="false" />
         <activity
