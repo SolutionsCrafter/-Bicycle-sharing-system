@@ -74,7 +74,7 @@
             android:backgroundTint="#F57C00"
             android:clickable="true"
             android:fontFamily="@font/merienda_one"
-            android:text="Scan QR code"
+            android:text="Scan bike QR code"
             android:textColor="@color/white"
             android:textSize="20dp"
             android:textStyle="bold" />

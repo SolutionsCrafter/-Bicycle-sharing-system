@@ -1,10 +1,7 @@
 package com.example.bicycleapp;
 
-import static android.content.ContentValues.TAG;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,10 +18,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
@@ -57,8 +52,8 @@ public class Payment extends AppCompatActivity {
 
         station1 = findViewById(R.id.BikeCountStation1);
         station2 = findViewById(R.id.BikeCountStation2);
-        PaymentBtn = findViewById(R.id.PaymentBtn);
-        ScannerBtn = findViewById(R.id.ScannerBtn);
+       //PaymentBtn = findViewById(R.id.PaymentBtn);
+        ScannerBtn = findViewById(R.id.PaymentBtn);
         Hello_Text = findViewById(R.id.Hello_Text);
         profile_pic = findViewById(R.id.profile_pic);
         String fullName = UserDataManager.getInstance().getFullName();
@@ -105,7 +100,7 @@ public class Payment extends AppCompatActivity {
             }
         });
 
-        //Check payment details is saved
+        /*//Check payment details is saved
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DocumentReference docRef = fStore.collection("Payment details").document(currentUserId);
 
@@ -139,7 +134,7 @@ public class Payment extends AppCompatActivity {
                     paymentInfoSaved = false;
                 }
             }
-        });
+        });*/
 
 
 
@@ -173,19 +168,19 @@ public class Payment extends AppCompatActivity {
         });
 
 
-        PaymentBtn.setOnClickListener(new View.OnClickListener() {
+        /*PaymentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Payment.this,com.example.bicycleapp.PaymentGateway.class);
                 startActivity(intent);
                 finish();
             }
-        });
+        });*/
 
         ScannerBtn.setOnClickListener(new View.OnClickListener() {  //Scan button
             @Override
             public void onClick(View v) {
-                if (paymentInfoSaved){
+                //if (paymentInfoSaved){
                     IntentIntegrator intentIntegrator = new IntentIntegrator(Payment.this);
                     intentIntegrator.setOrientationLocked(true); // This should lock the orientation
                     intentIntegrator.setPrompt("Scanning");
@@ -193,10 +188,10 @@ public class Payment extends AppCompatActivity {
                     intentIntegrator.initiateScan();
 
 
-                }
-                else {
-                    Toast.makeText(Payment.this,"Please save payment details!",Toast.LENGTH_SHORT).show();
-                }
+               // }
+               // else {
+                //    Toast.makeText(Payment.this,"Please save payment details!",Toast.LENGTH_SHORT).show();
+               // }
             }
         });
 

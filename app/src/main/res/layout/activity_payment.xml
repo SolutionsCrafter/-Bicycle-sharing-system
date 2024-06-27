@@ -16,6 +16,7 @@
         android:background="@drawable/bg_view" />
 
     <GridLayout
+        android:id="@+id/gridLayout"
         android:layout_width="387dp"
         android:layout_height="244dp"
         android:layout_below="@+id/top_view"
@@ -160,8 +161,8 @@
                     android:layout_marginTop="2dp"
                     android:text="1"
                     android:textColor="#ea1c15"
-                    android:textStyle="bold"
-                    android:textSize="40sp" />
+                    android:textSize="40sp"
+                    android:textStyle="bold" />
 
 
             </LinearLayout>
@@ -182,28 +183,24 @@
         android:background="@drawable/btn_orance"
         android:clickable="true"
         android:fontFamily="@font/carter_one"
-        android:text="payment  details"
-        android:textAlignment="center"
-        android:textColor="#f1f1f1"
-        android:textSize="22sp"
-        android:textStyle="bold" />
-
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/ScannerBtn"
-        android:layout_width="364dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="25dp"
-        android:layout_marginTop="750dp"
-        android:layout_marginRight="25dp"
-        android:background="@drawable/btn_orance"
-        android:clickable="true"
-        android:fontFamily="@font/carter_one"
         android:text="Scan Door QR code"
+        android:textAlignment="center"
         android:textColor="#f1f1f1"
         android:textSize="22sp"
-        android:textAlignment="center"
         android:textStyle="bold" />
+
+    <!-- New TextView added below the button -->
+    <TextView
+        android:id="@+id/scan_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/PaymentBtn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="You will be charged Rs 100/- for enter the station"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:textStyle="bold"/>
 
     <ScrollView
         android:id="@+id/scrollView"

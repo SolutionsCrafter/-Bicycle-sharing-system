@@ -148,7 +148,7 @@ public class SignUpPage extends AppCompatActivity {
                                             Log.d(TAG,"User profile created for"+userID);
                                         }
                                     });
-                                    Intent intent = new Intent(SignUpPage.this,com.example.bicycleapp.LoginPage.class);
+                                    Intent intent = new Intent(SignUpPage.this,com.example.bicycleapp.PaymentGateway.class);
                                     startActivity(intent);
                                     finish();
 
@@ -158,14 +158,14 @@ public class SignUpPage extends AppCompatActivity {
                                 }
                             }
                         })
-                         .addOnFailureListener(new OnFailureListener() {
-                          @Override
-                          public void onFailure(@NonNull Exception e) {
-                               // Handle failure
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Handle failure
                             }
-                      });
-                    }
-              });
+                        });
+            }
+        });
 
     }
 }

@@ -66,9 +66,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="33e72c2f-a2e9-4281-bf81-c426511bed4b" name="Changes" comment="Door system realtime database update">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/bicycleapp/AboutUp.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_about_up.xml" afterDir="false" />
+    <list default="true" id="33e72c2f-a2e9-4281-bf81-c426511bed4b" name="Changes" comment="create aboutUs activity">
       <change beforePath="$PROJECT_DIR$/.gradle/8.4/dependencies-accessors/dependencies-accessors.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.4/dependencies-accessors/dependencies-accessors.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.4/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.4/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.4/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.4/executionHistory/executionHistory.lock" afterDir="false" />
@@ -78,7 +76,13 @@
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/bicycleapp/Payment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/bicycleapp/Payment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/bicycleapp/PaymentGateway.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/bicycleapp/PaymentGateway.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/bicycleapp/SignUpPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/bicycleapp/SignUpPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_home_page.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_home_page.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_payment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_payment.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_payment_gateway.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_payment_gateway.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_sign_up_page.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_sign_up_page.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,7 +95,7 @@
   <component name="CodeInsightWorkspaceSettings">
     <option name="optimizeImportsOnTheFly" value="true" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[C:\Users\Chann\.android\avd\Pixel_6_API_34_1.avd]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[0f1912937d73]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -135,6 +139,7 @@
             <value>
               <list>
                 <branch-info repo="$PROJECT_DIR$" source="master" />
+                <branch-info repo="$PROJECT_DIR$" source="main" />
               </list>
             </value>
           </entry>
@@ -142,15 +147,36 @@
             <value>
               <list>
                 <branch-info repo="$PROJECT_DIR$" source="origin/master" />
+                <branch-info repo="$PROJECT_DIR$" source="origin/main" />
               </list>
             </value>
           </entry>
         </map>
       </branch-storage>
     </excluded-from-favorite>
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="time-and-cost-calculation" />
+              </list>
+            </value>
+          </entry>
+          <entry type="REMOTE">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="origin/Time-and-cost-calculation" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Test-barnch" />
+        <entry key="$PROJECT_DIR$" value="Location-New-Update" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -418,7 +444,15 @@
       <option name="project" value="LOCAL" />
       <updated>1719332330657</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="create aboutUs activity">
+      <option name="closed" value="true" />
+      <created>1719398365242</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1719398365242</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -453,6 +487,7 @@
     <MESSAGE value="Main activity comment" />
     <MESSAGE value="Location track system update" />
     <MESSAGE value="Door system realtime database update" />
-    <option name="LAST_COMMIT_MESSAGE" value="Door system realtime database update" />
+    <MESSAGE value="create aboutUs activity" />
+    <option name="LAST_COMMIT_MESSAGE" value="create aboutUs activity" />
   </component>
 </project>

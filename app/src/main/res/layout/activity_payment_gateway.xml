@@ -202,7 +202,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/btn_orance"
-        android:text="Pay 100 LKR"
+        android:text="Go back"
         android:textColor="#ffffff"
         android:textSize="20sp"
         android:textStyle="bold" />

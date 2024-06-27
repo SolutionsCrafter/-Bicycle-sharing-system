@@ -167,8 +167,8 @@ public class PaymentGateway extends AppCompatActivity {
     }
 
     void goBackToPaymentPage(){
-        Intent intent1 = new Intent(PaymentGateway.this,com.example.bicycleapp.Payment.class);
-        startActivity(intent1);
+        Intent intent = new Intent(PaymentGateway.this,com.example.bicycleapp.LoginPage.class);
+        startActivity(intent);
         finish();
     }
 
