@@ -33,7 +33,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-
+//SingUp page
 
 public class SignUpPage extends AppCompatActivity {
 
