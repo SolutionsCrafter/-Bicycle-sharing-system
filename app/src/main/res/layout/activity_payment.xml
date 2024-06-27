@@ -173,7 +173,7 @@
 
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/PaymentBtn"
+        android:id="@+id/ScannerBtn"
         android:layout_width="364dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="25dp"
@@ -182,28 +182,28 @@
         android:background="@drawable/btn_orance"
         android:clickable="true"
         android:fontFamily="@font/carter_one"
-        android:text="payment  details"
-        android:textAlignment="center"
-        android:textColor="#f1f1f1"
-        android:textSize="22sp"
-        android:textStyle="bold" />
-
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/ScannerBtn"
-        android:layout_width="364dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="25dp"
-        android:layout_marginTop="750dp"
-        android:layout_marginRight="25dp"
-        android:background="@drawable/btn_orance"
-        android:clickable="true"
-        android:fontFamily="@font/carter_one"
         android:text="Scan Door QR code"
+        android:textAlignment="center"
         android:textColor="#f1f1f1"
         android:textSize="22sp"
-        android:textAlignment="center"
         android:textStyle="bold" />
+
+    <!-- Place your TextView below the button -->
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/DoorPaymentText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ScannerBtn"
+        android:layout_marginTop="0dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:padding="12dp"
+        android:text="You will be charged Rs 100/- \nto enter the station"
+        android:textColor="#072d32"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/carter_one"
+        android:textAlignment="center" />
 
     <ScrollView
         android:id="@+id/scrollView"

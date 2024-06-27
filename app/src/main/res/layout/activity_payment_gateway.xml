@@ -186,27 +186,10 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/btn_orance"
-        android:text="Save Card Details"
+        android:text="signUp"
         android:textColor="#ffffff"
-        android:textSize="20sp"
+        android:textSize="24sp"
         android:textStyle="bold" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnDoPayment"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/btn_orance"
-        android:text="Pay 100 LKR"
-        android:textColor="#ffffff"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
 
 
 </LinearLayout>
