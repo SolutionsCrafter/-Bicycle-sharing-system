@@ -31,7 +31,7 @@ public class PaymentGateway extends AppCompatActivity {
     RadioGroup radioGroup;
     RadioButton radioVisa,radioMasterCard;
     EditText etCardNumber,etCVN,etBankName,etBranch;
-    Button btnSaveCardDetails,btnDoPayment;
+    Button btnSaveCardDetails;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userID;
@@ -54,7 +54,7 @@ public class PaymentGateway extends AppCompatActivity {
                 @Override
                 public void handleOnBackPressed() {
                     // Navigate back to the previous activity
-                    Intent loginIntent = new Intent(PaymentGateway.this, Payment.class);
+                    Intent loginIntent = new Intent(PaymentGateway.this, SignUpPage.class);
                     // Optionally, clear the activity stack to prevent back button from returning to HomePage
                     loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(loginIntent);
@@ -72,7 +72,6 @@ public class PaymentGateway extends AppCompatActivity {
         etBankName = findViewById(R.id.etBankName);
         etBranch = findViewById(R.id.etBranch);
         btnSaveCardDetails = findViewById(R.id.btnSaveCardDetails);
-        btnDoPayment = findViewById(R.id.btnDoPayment);
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -84,17 +83,6 @@ public class PaymentGateway extends AppCompatActivity {
                 updateFirebase();
             }
         });
-
-        btnDoPayment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(PaymentGateway.this,"Payment completed",Toast.LENGTH_SHORT).show();
-                Intent intent2 = new Intent(PaymentGateway.this,com.example.bicycleapp.HomePage.class);
-                startActivity(intent2);
-                finish();
-            }
-        });
-
     }
 
     //Update firebase
@@ -156,10 +144,9 @@ public class PaymentGateway extends AppCompatActivity {
                 @Override
                 public void onSuccess(Void unused) {
                     Toast.makeText(PaymentGateway.this,"Payment details saved",Toast.LENGTH_SHORT).show();
+                    goBackToPaymentPage();
                 }
             });
-
-            goBackToPaymentPage();
 
         } else {
             Toast.makeText(PaymentGateway.this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
@@ -167,7 +154,7 @@ public class PaymentGateway extends AppCompatActivity {
     }
 
     void goBackToPaymentPage(){
-        Intent intent1 = new Intent(PaymentGateway.this,com.example.bicycleapp.Payment.class);
+        Intent intent1 = new Intent(PaymentGateway.this,com.example.bicycleapp.LoginPage.class);
         startActivity(intent1);
         finish();
     }

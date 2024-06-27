@@ -126,6 +126,7 @@ public class HomePage extends AppCompatActivity {
                 intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
                 intentIntegrator.initiateScan();
                 startTask();
+
             } else {    // If location services are not enabled, prompt the user to enable them
                 Toast.makeText(HomePage.this, "Location unavailable!\nPlease enable location", Toast.LENGTH_SHORT).show();
             }
@@ -155,6 +156,12 @@ public class HomePage extends AppCompatActivity {
         } else {
             askPermission();
         }
+
+        // Delayed execution after 5 seconds
+        new Handler().postDelayed(() -> {
+            // Call your method here after 5 seconds
+            goToOnRide();
+        }, 5000); // 5000 milliseconds = 5 seconds
     }
 
     // Handle result from QR code scan
@@ -249,7 +256,7 @@ public class HomePage extends AppCompatActivity {
 
         // Create a new object with fields
         Map<String, Object> currentStatesData = new HashMap<>();
-        currentStatesData.put("Station no", station_NO);
+        currentStatesData.put("Start station", "Station"+station_NO);
         currentStatesData.put("User ID", userID);
 
         // Update the document in Firestore
@@ -339,7 +346,7 @@ public class HomePage extends AppCompatActivity {
     private void getCurrentTime() {
         Timestamp timestamp = Timestamp.now();    // Get current timestamp
         Map<String, Object> timeData = new HashMap<>();
-        timeData.put("start time", timestamp);
+        timeData.put("Ride start time", timestamp);
         fStore.collection("Current states")
                 .document("Bicycle1")
                 .update(timeData)
@@ -370,4 +377,10 @@ public class HomePage extends AppCompatActivity {
         };
         handler.postDelayed(runnable, 10000); // Start task after 10 seconds
     }
+    private void goToOnRide(){
+        Intent intent10 = new Intent(HomePage.this,com.example.bicycleapp.OnRide.class);
+        startActivity(intent10);
+    }
+
+
 }

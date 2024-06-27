@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -39,10 +38,8 @@ public class SignUpPage extends AppCompatActivity {
 
     // Declare variables
     EditText etEnterUserName,etEnterEmail,etEnterPass,etEnterNIC,etAddress,etEnterTel;
-    TextView tvClickLog;
     Button btnSignUp;
     FirebaseAuth fAuth;
-    // Initialize Firebase
     FirebaseFirestore fStore;
     String userID;
 
@@ -74,8 +71,7 @@ public class SignUpPage extends AppCompatActivity {
         etEnterNIC = findViewById(R.id.etEnterNIC);
         etEnterTel = findViewById(R.id.etEnterTel);
         etAddress = findViewById(R.id.etAddress);
-        //tvClickLog = findViewById(R.id.tvClickLog);
-        btnSignUp = findViewById(R.id.btnSingIn);
+        btnSignUp = findViewById(R.id.btnSignUp);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -146,11 +142,10 @@ public class SignUpPage extends AppCompatActivity {
                                         @Override
                                         public void onSuccess(Void unused) {
                                             Log.d(TAG,"User profile created for"+userID);
+
+                                            ChangeActivity();
                                         }
                                     });
-                                    Intent intent = new Intent(SignUpPage.this,com.example.bicycleapp.LoginPage.class);
-                                    startActivity(intent);
-                                    finish();
 
                                 } else {
                                     // If sign in fails
@@ -167,5 +162,11 @@ public class SignUpPage extends AppCompatActivity {
                     }
               });
 
+    }
+
+    void ChangeActivity(){
+        Intent intent = new Intent(SignUpPage.this,com.example.bicycleapp.PaymentGateway.class);
+        startActivity(intent);
+        finish();
     }
 }

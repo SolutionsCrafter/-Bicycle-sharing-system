@@ -57,7 +57,6 @@ public class Payment extends AppCompatActivity {
 
         station1 = findViewById(R.id.BikeCountStation1);
         station2 = findViewById(R.id.BikeCountStation2);
-        PaymentBtn = findViewById(R.id.PaymentBtn);
         ScannerBtn = findViewById(R.id.ScannerBtn);
         Hello_Text = findViewById(R.id.Hello_Text);
         profile_pic = findViewById(R.id.profile_pic);
@@ -114,18 +113,27 @@ public class Payment extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        boolean hasCardType = document.contains("Card type");  // Check for field existence
-                        boolean hasCardNumber = document.get("Card number") != null;  // Check for non-null value
+                    if (document != null && document.exists()) {
+                        // Check if 'Card type' field exists
+                        boolean hasCardType = document.contains("Card type");
+
+                        // Check if 'Card number' field exists and is non-null
+                        boolean hasCardNumber = document.get("Card number") != null;
 
                         if (hasCardType && hasCardNumber) {
                             // All required fields are filled
-                            PaymentBtn.setText("Payment details saved");
+                            if (PaymentBtn != null) {
+                                PaymentBtn.setText("Payment details saved");
+                            } else {
+                                Log.e(TAG, "PaymentBtn is null when setting text.");
+                            }
                             paymentInfoSaved = true;
                         } else {
                             // Some fields are missing
-                            Log.d(TAG, "Missing fields: " + (hasCardType ? "" : "Card type") +
-                                    (hasCardNumber ? "" : ", Card number"));
+                            String missingFields = "Missing fields: " +
+                                    (hasCardType ? "" : "Card type") +
+                                    (hasCardNumber ? "" : ", Card number");
+                            Log.d(TAG, missingFields);
                             paymentInfoSaved = false;
                         }
                     } else {
@@ -139,7 +147,9 @@ public class Payment extends AppCompatActivity {
                     paymentInfoSaved = false;
                 }
             }
+
         });
+
 
 
 
@@ -172,15 +182,6 @@ public class Payment extends AppCompatActivity {
             }
         });
 
-
-        PaymentBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Payment.this,com.example.bicycleapp.PaymentGateway.class);
-                startActivity(intent);
-                finish();
-            }
-        });
 
         ScannerBtn.setOnClickListener(new View.OnClickListener() {  //Scan button
             @Override
