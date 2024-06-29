@@ -27,7 +27,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -115,6 +114,8 @@ public class HomePage extends AppCompatActivity {
             finish();
         });
 
+
+
         // QR scanner
         btnTakeRide.setOnClickListener(v -> {
             // Check if location services are enabled
@@ -125,44 +126,22 @@ public class HomePage extends AppCompatActivity {
                 intentIntegrator.setPrompt("Scanning");
                 intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
                 intentIntegrator.initiateScan();
-                startTask();
+
+                // Delayed execution after 5 seconds
+                new Handler().postDelayed(() -> {
+                    // Call your method here after 5 seconds
+                    goToOnRide();
+                }, 5000); // 5000 milliseconds = 5 seconds
 
             } else {    // If location services are not enabled, prompt the user to enable them
+                // You can prompt the user to enable location services, but do not initiate scan or tasks
                 Toast.makeText(HomePage.this, "Location unavailable!\nPlease enable location", Toast.LENGTH_SHORT).show();
+                // Optionally, you can implement logic to wait for location services to be enabled
+                // and handle the button click again when they are enabled.
             }
         });
 
-        // Initialize LocationRequest and LocationCallback for periodic updates
-        locationRequest = LocationRequest.create();
-        locationRequest.setInterval(10000); // 10 seconds
-        locationRequest.setFastestInterval(5000); // 5 seconds
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        locationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                if (locationResult == null) {
-                    return;
-                }
-                for (Location location : locationResult.getLocations()) {
-                    updateLocationInFirestore(location.getLatitude(), location.getLongitude());
-                }
-            }
-        };
-
-        // Start location updates if permission is granted
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            startLocationUpdates();
-        } else {
-            askPermission();
-        }
-
-        // Delayed execution after 5 seconds
-        new Handler().postDelayed(() -> {
-            // Call your method here after 5 seconds
-            goToOnRide();
-        }, 5000); // 5000 milliseconds = 5 seconds
-    }
+    }   //End of onCreate method
 
     // Handle result from QR code scan
     @Override
@@ -179,7 +158,7 @@ public class HomePage extends AppCompatActivity {
                     updateFirebaseStations(QR_Value);   //Update station
                     updateFirebaseRealtimeDatabaseFromApp(QR_Value);   //Update realtime database
                     updateFirebaseCurrentStates(QR_Value);  //Update current states
-                    startLocationUpdates(); // Start location updates
+                    //startLocationUpdates(); // Start location updates
                     getCurrentTime(); // Update start time
                 } else {
                     Toast.makeText(HomePage.this, "Invalid QR code", Toast.LENGTH_SHORT).show();
@@ -314,7 +293,7 @@ public class HomePage extends AppCompatActivity {
     // Check if location services are enabled
     private boolean isLocationEnabled() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) /*|| locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)*/;
     }
 
     // Request location permissions
@@ -328,7 +307,7 @@ public class HomePage extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startLocationUpdates();
+                //startLocationUpdates();
             } else {
                 Toast.makeText(HomePage.this, "Permission denied", Toast.LENGTH_SHORT).show();
             }
@@ -339,7 +318,7 @@ public class HomePage extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopLocationUpdates(); // Stop location updates to prevent memory leaks
+        //stopLocationUpdates(); // Stop location updates to prevent memory leaks
     }
 
     // Get current timestamp

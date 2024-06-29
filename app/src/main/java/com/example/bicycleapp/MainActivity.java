@@ -1,6 +1,7 @@
 package com.example.bicycleapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Button;
@@ -20,10 +21,11 @@ public class MainActivity extends AppCompatActivity {
 
     TextView tvWelcome;
     ImageView imgWelcome;
-    Button btnLogin,btnRegister;
+    Button btnLogin, btnRegister;
     FirebaseAuth fAuth;
     private int backPressedCount = 0; // Added for back press handling
     private android.widget.Toast Toast;
+    private SharedPreferences rideData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,55 +44,40 @@ public class MainActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         btnRegister = findViewById(R.id.btnRegister);
 
-        // If login button click
-        /*btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(MainActivity.this,com.example.bicycleapp.LoginPage.class);
-                startActivity(intent);
-            }
-        });
-
-          // If Register button click
-          btnRegister.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-
-                 Intent intent = new Intent(MainActivity.this,com.example.bicycleapp.SignUpPage.class);
-                 startActivity(intent);
-          }
-      });*/
-
+        rideData = getSharedPreferences("RideData", MODE_PRIVATE);
 
         btnLogin.setOnClickListener(v -> {
             FirebaseUser currentUser = fAuth.getCurrentUser();
-            if (currentUser != null){
-                android.widget.Toast.makeText(MainActivity.this, "Authentication successful.", android.widget.Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this,com.example.bicycleapp.Payment.class);
-                startActivity(intent);
+            if (currentUser != null) {
+                Toast.makeText(MainActivity.this, "Authentication successful.", Toast.LENGTH_SHORT).show();
+                if (shouldOpenOnRidePage()) {
+                    Intent intent = new Intent(MainActivity.this, OnRide.class);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(MainActivity.this, Payment.class);
+                    startActivity(intent);
+                }
                 finish();
-            }else {
+            } else {
                 Intent intent = new Intent(MainActivity.this, LoginPage.class);
                 startActivity(intent);
             }
-
         });
 
         btnRegister.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, SignUpPage.class);
             startActivity(intent);
         });
-
-
     }
 
-
+    private boolean shouldOpenOnRidePage() {
+        return rideData.contains("startStation") && rideData.contains("formattedTime");
+    }
 
     @Override
     public void onBackPressed() {
         if (backPressedCount == 0) {
-            showExitConfirmationToast(); // You can customize this method with a Toast message
+            showExitConfirmationToast();
             backPressedCount++;
         } else {
             super.onBackPressed();
@@ -101,7 +88,4 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
         new Handler().postDelayed(() -> backPressedCount = 0, 2000); // Reset counter after 2 seconds
     }
-
-    //Test comment
-
 }

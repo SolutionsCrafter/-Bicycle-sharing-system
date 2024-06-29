@@ -37,13 +37,28 @@
             android:layout_marginTop="65dp"
             app:srcCompat="@drawable/scan" />
 
+        <Button
+            android:id="@+id/btnTakeRide"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="70dp"
+            android:background="@drawable/btn_orance"
+            android:backgroundTint="#F57C00"
+            android:clickable="true"
+            android:fontFamily="@font/abeezee"
+            android:text="Bike scanner"
+            android:textColor="@color/white"
+            android:textSize="27dp"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/textView4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/cherry_cream_soda"
+            android:layout_marginTop="25dp"
+            android:fontFamily="@font/carter_one"
             android:gravity="center"
             android:text="Unlock a bikes by enabling location and"
             android:textColor="#1F2042"
@@ -56,27 +71,12 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="10dp"
-            android:fontFamily="@font/cherry_cream_soda"
+            android:fontFamily="@font/carter_one"
             android:gravity="center"
             android:lineSpacingExtra="10dp"
             android:text="scanning the QR code in the bike"
             android:textColor="#1F2042"
             android:textSize="16dp"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/btnTakeRide"
-            android:layout_width="300dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="80dp"
-            android:background="@drawable/btn_orance"
-            android:backgroundTint="#F57C00"
-            android:clickable="true"
-            android:fontFamily="@font/merienda_one"
-            android:text="Scan QR code"
-            android:textColor="@color/white"
-            android:textSize="20dp"
             android:textStyle="bold" />
 
         <LinearLayout

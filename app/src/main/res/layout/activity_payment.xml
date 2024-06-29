@@ -181,11 +181,11 @@
         android:layout_marginRight="25dp"
         android:background="@drawable/btn_orance"
         android:clickable="true"
-        android:fontFamily="@font/carter_one"
-        android:text="Scan Door QR code"
+        android:fontFamily="@font/abeezee"
+        android:text="Door scanner"
         android:textAlignment="center"
         android:textColor="#f1f1f1"
-        android:textSize="22sp"
+        android:textSize="28sp"
         android:textStyle="bold" />
 
     <!-- Place your TextView below the button -->

@@ -3,6 +3,7 @@
     <array name="preloaded_fonts" translatable="false">
         <item></item>
         <item>@font/</item>
+        <item>@font/abeezee</item>
         <item>@font/acme</item>
         <item>@font/alfa_slab_one</item>
         <item>@font/arbutus</item>

@@ -1,10 +1,7 @@
 package com.example.bicycleapp;
 
-import static android.content.ContentValues.TAG;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,10 +18,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
@@ -44,7 +39,6 @@ public class Payment extends AppCompatActivity {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userID ;
-    boolean paymentInfoSaved;
     private String QR_Value;
     private boolean state;
     private FirebaseDatabase fDatabase;
@@ -105,7 +99,7 @@ public class Payment extends AppCompatActivity {
         });
 
         //Check payment details is saved
-        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        /*String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DocumentReference docRef = fStore.collection("Payment details").document(currentUserId);
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -148,7 +142,7 @@ public class Payment extends AppCompatActivity {
                 }
             }
 
-        });
+        });*/
 
 
 
@@ -186,18 +180,12 @@ public class Payment extends AppCompatActivity {
         ScannerBtn.setOnClickListener(new View.OnClickListener() {  //Scan button
             @Override
             public void onClick(View v) {
-                if (paymentInfoSaved){
+
                     IntentIntegrator intentIntegrator = new IntentIntegrator(Payment.this);
                     intentIntegrator.setOrientationLocked(true); // This should lock the orientation
                     intentIntegrator.setPrompt("Scanning");
                     intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
                     intentIntegrator.initiateScan();
-
-
-                }
-                else {
-                    Toast.makeText(Payment.this,"Please save payment details!",Toast.LENGTH_SHORT).show();
-                }
             }
         });
 
@@ -210,7 +198,7 @@ public class Payment extends AppCompatActivity {
             }
         });
 
-    }
+    }   //End of onCreate method
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -9,5 +9,10 @@
 
     <color name="Green">#046307</color>
 
+    <color name="backgroundColor">#f0f0f0</color>
+    <color name="textPrimary">#000000</color>
+    <color name="dividerColor">#d0d0d0</color>
+
+    <color name="OnRideBill"> #e8a817</color>
 
 </resources>
