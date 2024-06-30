@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
@@ -32,8 +33,10 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
@@ -48,6 +51,8 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 
@@ -72,6 +77,9 @@ public class OnRide extends AppCompatActivity {
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
 
+    private String formattedTime;
+    private String currentTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +103,9 @@ public class OnRide extends AppCompatActivity {
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         startLocationProcess();
-        //startTask();
+
+        // Schedule the method to run after 1 minute
+        scheduleMethodWithDelay(60000); // 60000 milliseconds = 1 minute
 
     }   //End of onCreate method
 
@@ -135,6 +145,7 @@ public class OnRide extends AppCompatActivity {
         fStore = FirebaseFirestore.getInstance();
         fAuth = FirebaseAuth.getInstance();
         fDatabase = FirebaseDatabase.getInstance();
+        userID = fAuth.getCurrentUser().getUid();
     }
 
     // Retrieve current states data from Firebase Firestore
@@ -162,7 +173,7 @@ public class OnRide extends AppCompatActivity {
                     if (rideStartTimeStamp != null) {
                         Date rideStartTime = rideStartTimeStamp.toDate();
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-                        String formattedTime = sdf.format(rideStartTime);
+                        formattedTime = sdf.format(rideStartTime);
                         tvStartTime.setText(formattedTime);
 
                         // Store formatted time in SharedPreferences
@@ -263,6 +274,7 @@ public class OnRide extends AppCompatActivity {
         clearSharedPreferences();
         stopLocationUpdates();
         ClearCurrentStatesData();
+        deleteFromMissingRiders();
 
         // Notify the user
         Toast.makeText(OnRide.this, "Ride ended and data cleared", Toast.LENGTH_SHORT).show();
@@ -290,18 +302,18 @@ public class OnRide extends AppCompatActivity {
     //Clear current states data
     private void ClearCurrentStatesData(){
         // Reference to the document
-        DocumentReference docRef4 = FirebaseFirestore.getInstance().collection("Current states").document("Bicycle1");
+        DocumentReference docRef2 = FirebaseFirestore.getInstance().collection("Current states").document("Bicycle1");
 
         // Create a batch operation
         WriteBatch batch = FirebaseFirestore.getInstance().batch();
 
         // Set each field to null
-        batch.update(docRef4, "Location", null);
-        batch.update(docRef4, "Ride Duration", null);
-        batch.update(docRef4, "Ride end time", null);
-        batch.update(docRef4, "Ride start time", null);
-        batch.update(docRef4, "Start station", null);
-        batch.update(docRef4, "User ID", null);
+        batch.update(docRef2, "Location", null);
+        batch.update(docRef2, "Ride Duration", null);
+        batch.update(docRef2, "Ride end time", null);
+        batch.update(docRef2, "Ride start time", null);
+        batch.update(docRef2, "Start station", null);
+        batch.update(docRef2, "User ID", null);
 
         // Commit the batch
         batch.commit().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -410,6 +422,87 @@ public class OnRide extends AppCompatActivity {
     // Method to stop location updates
     private void stopLocationUpdates() {
         fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+    }
+
+    //getCurrentTime
+    private void getCurrentTime(){
+        LocalDateTime localDateTime = LocalDateTime.now();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        currentTime = localDateTime.format(formatter);
+    }
+
+    //delay run method to check missing riders
+    private void scheduleMethodWithDelay(long delayMillis) {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                checkIsRiderMissing();
+            }
+        }, delayMillis);
+    }
+
+    //Check ride end time is update or not after 4 hours
+    private void checkIsRiderMissing() {
+        DocumentReference docRef3 = fStore.collection("Current states").document("Bicycle1");
+
+        docRef3.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot documentSnapshot2 = task.getResult();
+                    if (documentSnapshot2.exists()){
+                        if (documentSnapshot2.contains("Ride end time")){
+                            Timestamp timestamp2 = documentSnapshot2.getTimestamp("Ride end time");
+                            if (timestamp2 == null){
+                                updateMissingRiders();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+    }
+
+    //Update missing riders
+    private void updateMissingRiders(){
+        DocumentReference docRef4 = fStore.collection("Missing riders").document("Bicycle1");
+
+        docRef4.update("User ID",userID);
+    }
+
+    //Clear from missing riders data
+    private void deleteFromMissingRiders(){
+
+        // Reference to the document and collection
+        DocumentReference docRef = fStore.collection("Missing riders").document("Bicycle1");
+
+        // Create a batch operation
+        WriteBatch batch = fStore.batch();
+
+        // Set "User ID" field to null or delete it
+        batch.update(docRef, "User ID", null);
+
+        // Commit the batch
+        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "Field deleted successfully");
+                    Toast.makeText(OnRide.this, "Missing riders deleted successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.d(TAG, "Error deleting field", task.getException());
+                    Toast.makeText(OnRide.this, "Error deleting Missing riders", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    //Cost calculate
+    private void costCalculate(){
+
     }
 
 
