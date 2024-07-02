@@ -63,8 +63,8 @@ import java.util.Map;
 public class OnRide extends AppCompatActivity {
 
     // Variable declarations
-    private TextView tvStart, tvEnd, tvStartTime, tvEndTime, tvDocCharge, tvRideCost, tvTotalCost,tvRideOn;
-    private Button btnParkDoorScan,btnParkLockScan;
+    private TextView tvStart, tvEnd, tvStartTime, tvEndTime, tvDocCharge, tvRideCost, tvTotalCost,tvRideOn,tvBtnInfo;
+    private Button btnParkDoorScan,btnParkLockScan,btnBackToMainPage;
     private FirebaseFirestore fStore;
     private FirebaseAuth fAuth;
     private FirebaseDatabase fDatabase;
@@ -127,6 +127,8 @@ public class OnRide extends AppCompatActivity {
         tvRideCost = findViewById(R.id.tvRideCost);
         tvTotalCost = findViewById(R.id.tvTotalCost);
         tvRideOn = findViewById(R.id.tvRideOn);
+        tvBtnInfo = findViewById(R.id.tvBtnInfo);
+        btnBackToMainPage = findViewById(R.id.btnBackToMainPage);
         btnParkDoorScan = findViewById(R.id.parkDoorScan);
         btnParkLockScan = findViewById(R.id.parkLockScan);
 
@@ -152,6 +154,16 @@ public class OnRide extends AppCompatActivity {
                 intentIntegrator.setPrompt("Scanning lock QR");
                 intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
                 intentIntegrator.initiateScan();
+            }
+        });
+
+        // Back to main button click listener
+        btnBackToMainPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent11 = new Intent(OnRide.this,com.example.bicycleapp.Payment.class);
+                startActivity(intent11);
+                finish();
             }
         });
 
@@ -293,6 +305,10 @@ public class OnRide extends AppCompatActivity {
         String stationId = "Door" + stationNumber;
         int newValue = 0; // Replace with your logic to determine the new value (e.g., 0 for no bicycles)
         fDatabase.getReference().child(stationId).setValue(newValue);  // No "Stations" node
+
+        btnParkDoorScan.setVisibility(View.GONE);
+        btnParkLockScan.setVisibility(View.VISIBLE);
+        tvBtnInfo.setText("Scan the QR on bicycle\nto end ride");
     }
 
 
@@ -333,6 +349,10 @@ public class OnRide extends AppCompatActivity {
         ClearCurrentStatesData();
         deleteFromMissingRiders();
         goBack();
+        tvRideOn.setText("Ride Ended");
+        btnBackToMainPage.setVisibility(View.VISIBLE);
+        btnParkLockScan.setVisibility(View.GONE);
+        tvBtnInfo.setText("Ride ended successfully");
 
         // Notify the user
         Toast.makeText(OnRide.this, "Ride ended and data cleared", Toast.LENGTH_SHORT).show();
