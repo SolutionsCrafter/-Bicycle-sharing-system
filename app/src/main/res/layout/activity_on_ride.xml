@@ -155,7 +155,7 @@
             android:background="@drawable/textview_background"
             android:gravity="end"
             android:padding="8dp"
-            android:text="Start Time Value"
+            android:text="Start Time Value\n "
             android:textColor="@color/textPrimary"
             android:textSize="18sp" />
 
@@ -295,7 +295,7 @@
     </GridLayout>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/parkStationScan"
+        android:id="@+id/parkDoorScan"
         android:layout_width="320dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
@@ -306,6 +306,23 @@
         android:background="@drawable/btn_orance"
         android:fontFamily="@font/abeezee"
         android:text="Door scanner"
+        android:textColor="#ffffff"
+        android:textSize="27sp"
+        android:textStyle="bold"
+        tools:fontFamily="@font/abeezee" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/parkLockScan"
+        android:layout_width="320dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/btn_orance2"
+        android:fontFamily="@font/abeezee"
+        android:text="Lock scanner"
         android:textColor="#ffffff"
         android:textSize="27sp"
         android:textStyle="bold"

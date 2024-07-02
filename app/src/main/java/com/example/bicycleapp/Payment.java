@@ -42,6 +42,7 @@ public class Payment extends AppCompatActivity {
     private String QR_Value;
     private boolean state;
     private FirebaseDatabase fDatabase;
+    public int StartStationNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -227,15 +228,15 @@ public class Payment extends AppCompatActivity {
         }
     }
 
-    // Check QR value validity
+    // Check door QR value validity
     private boolean QR_Validity(String input) {
         boolean state = false;
-        // Check if the string has at least 2 characters
-        if (input.length() == 4) {
+        // Check if the string has at least 3 characters
+        if (input.length() == 3) {
             // Extract the first 2 characters
-            String firstThreeChars = input.substring(0, 3);
-            // Compare with "1CS"
-            if (firstThreeChars.equals("1CS")) {
+            String firstTwoChars = input.substring(0, 2);
+            // Compare with "CS"
+            if (firstTwoChars.equals("CS")) {
                 state = true;
             } else {
                 state = false;
@@ -249,10 +250,10 @@ public class Payment extends AppCompatActivity {
     // Update realtime database from mobile app
     private void updateFirebaseRealtimeDatabaseFromApp(String value) {
         // Extract station number from the 4th character of QR code data
-        int stationNumber = Character.getNumericValue(value.charAt(3)); // Assuming 4th character
+        StartStationNumber = Character.getNumericValue(value.charAt(2)); // Assuming 4th character
 
         // Update the station value based on station number (directly update Station1 or Station2)
-        String stationId = "Door" + stationNumber;
+        String stationId = "Door" + StartStationNumber;
 
         int newValue = 0; // Replace with your logic to determine the new value (e.g., 0 for no bicycles)
 
@@ -265,6 +266,7 @@ public class Payment extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Update Door" + stationId + " successful", Toast.LENGTH_SHORT).show();
                         // Add any further actions upon success, if needed
                         Intent intent2 = new Intent(Payment.this,com.example.bicycleapp.HomePage.class);
+                        intent2.putExtra("StartStation", StartStationNumber);
                         startActivity(intent2);
                         finish();
                     }

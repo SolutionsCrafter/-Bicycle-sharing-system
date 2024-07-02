@@ -56,6 +56,9 @@ public class HomePage extends AppCompatActivity {
     private FirebaseDatabase fDatabase;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
+    private int stationNumber;
+    private int bicycleNumber;
+    private int passInt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,7 @@ public class HomePage extends AppCompatActivity {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         // Initialize Firebase Realtime Database instance
         fDatabase = FirebaseDatabase.getInstance();
+        passInt = getIntent().getIntExtra("StartStation", 0);
 
         // Implement OnBackPressedDispatcher for back button navigation
         OnBackPressedDispatcher dispatcher = getOnBackPressedDispatcher();
@@ -127,11 +131,6 @@ public class HomePage extends AppCompatActivity {
                 intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
                 intentIntegrator.initiateScan();
 
-                // Delayed execution after 5 seconds
-                new Handler().postDelayed(() -> {
-                    // Call your method here after 5 seconds
-                    goToOnRide();
-                }, 5000); // 5000 milliseconds = 5 seconds
 
             } else {    // If location services are not enabled, prompt the user to enable them
                 // You can prompt the user to enable location services, but do not initiate scan or tasks
@@ -160,6 +159,12 @@ public class HomePage extends AppCompatActivity {
                     updateFirebaseCurrentStates(QR_Value);  //Update current states
                     //startLocationUpdates(); // Start location updates
                     getCurrentTime(); // Update start time
+
+                    // Delayed execution after 5 seconds
+                    new Handler().postDelayed(() -> {
+                        // Call your method here after 5 seconds
+                        goToOnRide();
+                    }, 5000); // 5000 milliseconds = 5 seconds
                 } else {
                     Toast.makeText(HomePage.this, "Invalid QR code", Toast.LENGTH_SHORT).show();
                 }
@@ -171,15 +176,15 @@ public class HomePage extends AppCompatActivity {
         }
     }
 
-    // Check QR value validity
+    // Check lock QR value validity
     private boolean QR_Validity(String input) {
         boolean state = false;
-        // Check if the string has at least 2 characters
+        // Check if the string has at least 4 characters
         if (input.length() == 4) {
             // Extract the first 2 characters
-            String firstThreeChars = input.substring(0, 3);
-            // Compare with "1CS"
-            if (firstThreeChars.equals("1CS")) {
+            String firstTwoChars = input.substring(0, 3);
+            // Compare with "CSB"
+            if (firstTwoChars.equals("CSB")) {
                 state = true;
             } else {
                 state = false;
@@ -192,11 +197,9 @@ public class HomePage extends AppCompatActivity {
 
     // Update realtime database from mobile app
     private void updateFirebaseRealtimeDatabaseFromApp(String value) {
-        // Extract station number from the 4th character of QR code data
-        int stationNumber = Character.getNumericValue(value.charAt(3)); // Assuming 4th character
 
         // Update the station value based on station number (directly update Station1 or Station2)
-        String stationId = "Station" + stationNumber;
+        String stationId = "Station" + passInt;
 
         int newValue = 0; // Replace with your logic to determine the new value (e.g., 0 for no bicycles)
         fDatabase.getReference().child(stationId).setValue(newValue);  // No "Stations" node
@@ -204,7 +207,6 @@ public class HomePage extends AppCompatActivity {
 
     // Update firebase Station
     private void updateFirebaseStations(String value) {
-        int station_NO = Character.getNumericValue(value.charAt(3)); // Extract station number from QR code
 
         // Create a new station object with fields
         Map<String, Object> stationData = new HashMap<>();
@@ -213,12 +215,12 @@ public class HomePage extends AppCompatActivity {
 
         // Update the document in Firestore based on station number
         fStore.collection("Stations")
-                .document("Station" + station_NO)
+                .document("Station" + passInt)
                 .update(stationData)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        Toast.makeText(HomePage.this, "Station " + station_NO + " updated successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(HomePage.this, "Station " + passInt + " updated successfully", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -231,16 +233,17 @@ public class HomePage extends AppCompatActivity {
 
     // Update firebase Current states (Station number and userID)
     private void updateFirebaseCurrentStates(String value) {
-        int station_NO = Character.getNumericValue(value.charAt(3)); // Extract station number from QR code
+
+        bicycleNumber = Character.getNumericValue(value.charAt(3)); // Extract bicycle number from QR code
 
         // Create a new object with fields
         Map<String, Object> currentStatesData = new HashMap<>();
-        currentStatesData.put("Start station", "Station"+station_NO);
+        currentStatesData.put("Start station", "Station"+passInt);
         currentStatesData.put("User ID", userID);
 
         // Update the document in Firestore
         fStore.collection("Current states")
-                .document("Bicycle1")
+                .document("Bicycle"+bicycleNumber)
                 .update(currentStatesData)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -327,7 +330,7 @@ public class HomePage extends AppCompatActivity {
         Map<String, Object> timeData = new HashMap<>();
         timeData.put("Ride start time", timestamp);
         fStore.collection("Current states")
-                .document("Bicycle1")
+                .document("Bicycle"+bicycleNumber)
                 .update(timeData)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

@@ -19,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,19 +56,23 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class OnRide extends AppCompatActivity {
 
     // Variable declarations
     private TextView tvStart, tvEnd, tvStartTime, tvEndTime, tvDocCharge, tvRideCost, tvTotalCost,tvRideOn;
-    private Button btnParkScan;
+    private Button btnParkDoorScan,btnParkLockScan;
     private FirebaseFirestore fStore;
     private FirebaseAuth fAuth;
     private FirebaseDatabase fDatabase;
     private String userID;
     private String QR_Value;
-    private boolean state;
+    //private String QR_Value2;
+    private boolean state1;
+    private boolean state2;
 
     // SharedPreferences variables
     private SharedPreferences sharedPreferences;
@@ -74,11 +80,14 @@ public class OnRide extends AppCompatActivity {
 
     FusedLocationProviderClient fusedLocationProviderClient;
     private final static int REQUEST_CODE = 100;
+    //private final static int REQUEST_CODE2 = 200;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
 
     private String formattedTime;
     private String currentTime;
+    private int stationNumber;
+    private int bicycleNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,20 +127,34 @@ public class OnRide extends AppCompatActivity {
         tvRideCost = findViewById(R.id.tvRideCost);
         tvTotalCost = findViewById(R.id.tvTotalCost);
         tvRideOn = findViewById(R.id.tvRideOn);
-        btnParkScan = findViewById(R.id.parkStationScan);
+        btnParkDoorScan = findViewById(R.id.parkDoorScan);
+        btnParkLockScan = findViewById(R.id.parkLockScan);
 
-        // Set up button click listeners
-        btnParkScan.setOnClickListener(new View.OnClickListener() {
+        // Set up parking door  button click listener
+        btnParkDoorScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 IntentIntegrator intentIntegrator = new IntentIntegrator(OnRide.this);
                 intentIntegrator.setOrientationLocked(true); // This should lock the orientation
-                intentIntegrator.setPrompt("Scanning");
+                intentIntegrator.setPrompt("Scanning door QR");
                 intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
                 intentIntegrator.initiateScan();
             }
         });
+
+
+        // Set up parking lock button click listener
+        btnParkLockScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentIntegrator intentIntegrator = new IntentIntegrator(OnRide.this);
+                intentIntegrator.setOrientationLocked(true); // This should lock the orientation
+                intentIntegrator.setPrompt("Scanning lock QR");
+                intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+                intentIntegrator.initiateScan();
+            }
+        });
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -190,40 +213,48 @@ public class OnRide extends AppCompatActivity {
     //handle QR code result
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (intentResult != null) {
             String contents = intentResult.getContents();
             if (contents != null) {
-                QR_Value = contents;
-                // Check QR code validity
-                state = QR_Validity(QR_Value);
-                if (state) {    // If QR code is valid
-                    // Send data into firebase
-                    //updateFirebaseStations(QR_Value);   //Update station
-                    updateFirebaseRealtimeDatabaseFromApp(QR_Value);   //Update realtime database
-                    //updateFirebaseCurrentStates(QR_Value);  //Update current states
-                    //startLocationUpdates(); // Start location updates
-                    //getCurrentTime(); // Update start time
-                } else {
-                    Toast.makeText(OnRide.this, "Invalid QR code", Toast.LENGTH_SHORT).show();
-                }
+                    QR_Value = contents;
+
+                    if (QR_Value.length() == 3){
+                        state1 = Door_QR_Validity(QR_Value);
+
+                        if (state1) {
+                            updateFirebaseRealtimeDatabaseDoorState(QR_Value);
+                        } else {
+                            Toast.makeText(OnRide.this, "Invalid door QR code", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    if (QR_Value.length() == 4){
+                        state2 = Lock_QR_Validity(QR_Value);
+
+                        if (state2){
+                            updateFirestoreStation(QR_Value);
+                        }else {
+                            Toast.makeText(OnRide.this, "Invalid lock QR code", Toast.LENGTH_SHORT).show();
+                        }
+                    }
             } else {
                 Toast.makeText(this, "Scan failed!", Toast.LENGTH_SHORT).show();
             }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
-    // Check QR value validity
-    private boolean QR_Validity(String input) {
+
+
+    //check lock QR code validity
+    private boolean Lock_QR_Validity(String input){
         boolean state = false;
-        // Check if the string has at least 2 characters
+        // Check if the string has at least 4 characters
         if (input.length() == 4) {
             // Extract the first 2 characters
-            String firstThreeChars = input.substring(0, 3);
-            // Compare with "1CS"
-            if (firstThreeChars.equals("1CS")) {
+            String firstTwoChars = input.substring(0, 3);
+            // Compare with "CSB"
+            if (firstTwoChars.equals("CSB")) {
                 state = true;
             } else {
                 state = false;
@@ -234,32 +265,58 @@ public class OnRide extends AppCompatActivity {
         return state;
     }
 
-    // Update realtime database from mobile app
-    private void updateFirebaseRealtimeDatabaseFromApp(String value) {
-        // Extract station number from the 4th character of QR code data
-        int stationNumber = Character.getNumericValue(value.charAt(3)); // Assuming 4th character
+    // Check door QR value validity
+    private boolean Door_QR_Validity(String input) {
+        boolean state4 = false;
+        // Check if the string has at least 3 characters
+        if (input.length() == 3) {
+            // Extract the first 2 characters
+            String firstTwoChars = input.substring(0, 2);
+            // Compare with "CS"
+            if (firstTwoChars.equals("CS")) {
+                state4 = true;
+            } else {
+                state4 = false;
+            }
+        } else {
+            state4 = false;
+        }
+        return state4;
+    }
+
+    // Update realtime database door state
+    private void updateFirebaseRealtimeDatabaseDoorState(String value) {
+        // Extract station number from the 3th character of QR code data
+        stationNumber = Character.getNumericValue(value.charAt(2)); // Assuming 3th character
 
         // Update the station value based on station number (directly update Station1 or Station2)
         String stationId = "Door" + stationNumber;
-
         int newValue = 0; // Replace with your logic to determine the new value (e.g., 0 for no bicycles)
+        fDatabase.getReference().child(stationId).setValue(newValue);  // No "Stations" node
+    }
 
-        // Update the Firebase Realtime Database for parking station
-        fDatabase.getReference().child(stationId).setValue(newValue)
+
+    // Update firestore station
+    private void updateFirestoreStation(String value) {
+
+        Map<String, Object> stationData = new HashMap<>();
+        stationData.put("Availability", true);
+        stationData.put("Bicycle count", 1);
+
+        fStore.collection("Stations")
+                .document("Station" + stationNumber)
+                .update(stationData)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        // Successfully updated the database
-                        Toast.makeText(getApplicationContext(), "Update Door" + stationId + " successful", Toast.LENGTH_SHORT).show();
-                        endRideAndClearData();
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(OnRide.this, "Station " + 2 + " updated successfully", Toast.LENGTH_SHORT).show();
+                        endRideAndClearData(); // Ensure this method is correctly called here
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // Failed to update the database
-                        Toast.makeText(getApplicationContext(), "Failed to update Door" + stationId, Toast.LENGTH_SHORT).show();
-                        // Add any error handling code here
+                        Toast.makeText(OnRide.this, "Error updating station: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -275,6 +332,7 @@ public class OnRide extends AppCompatActivity {
         stopLocationUpdates();
         ClearCurrentStatesData();
         deleteFromMissingRiders();
+        goBack();
 
         // Notify the user
         Toast.makeText(OnRide.this, "Ride ended and data cleared", Toast.LENGTH_SHORT).show();
@@ -502,7 +560,23 @@ public class OnRide extends AppCompatActivity {
 
     //Cost calculate
     private void costCalculate(){
+        
+    }
 
+    private void goBack(){
+        // Implement OnBackPressedDispatcher for back button navigation
+        OnBackPressedDispatcher dispatcher = getOnBackPressedDispatcher();
+        dispatcher.addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Navigate back to the previous activity
+                Intent loginIntent = new Intent(OnRide.this, Payment.class);
+                // Optionally, clear the activity stack to prevent back button from returning to HomePage
+                loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(loginIntent);
+                finish(); // Close HomePage
+            }
+        });
     }
 
 
