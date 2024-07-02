@@ -66,13 +66,8 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="33e72c2f-a2e9-4281-bf81-c426511bed4b" name="Changes" comment="missing riders data update">
+    <list default="true" id="33e72c2f-a2e9-4281-bf81-c426511bed4b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/bicycleapp/HomePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/bicycleapp/HomePage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/bicycleapp/OnRide.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/bicycleapp/OnRide.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/bicycleapp/Payment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/bicycleapp/Payment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_home_page.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_home_page.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_on_ride.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_on_ride.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -144,7 +139,7 @@
     </excluded-from-favorite>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="missing-riders-dara-update" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -423,7 +418,15 @@
       <option name="project" value="LOCAL" />
       <updated>1719783892936</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="QR value modify">
+      <option name="closed" value="true" />
+      <created>1719949162237</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1719949162237</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -437,7 +440,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="origin/Channa" />
+                        <option value="origin/Cost-&amp;-database-updates" />
                       </list>
                     </value>
                   </entry>
@@ -459,6 +462,7 @@
     <MESSAGE value="Location track system update" />
     <MESSAGE value="Door system realtime database update" />
     <MESSAGE value="missing riders data update" />
-    <option name="LAST_COMMIT_MESSAGE" value="missing riders data update" />
+    <MESSAGE value="QR value modify" />
+    <option name="LAST_COMMIT_MESSAGE" value="QR value modify" />
   </component>
 </project>
