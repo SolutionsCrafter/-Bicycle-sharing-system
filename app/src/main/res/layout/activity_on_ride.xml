@@ -322,13 +322,33 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/btn_orance2"
         android:fontFamily="@font/abeezee"
-        android:text="Lock scanner"
+        android:text="Bike scanner"
         android:textColor="#ffffff"
         android:textSize="27sp"
         android:textStyle="bold"
-        tools:fontFamily="@font/abeezee" />
+        tools:fontFamily="@font/abeezee"
+        android:visibility="gone"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnBackToMainPage"
+        android:layout_width="320dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/btn_orance3"
+        android:fontFamily="@font/abeezee"
+        android:text="Back to main"
+        android:textColor="#ffffff"
+        android:textSize="27sp"
+        android:textStyle="bold"
+        tools:fontFamily="@font/abeezee"
+        android:visibility="gone"/>
 
     <TextView
+        android:id="@+id/tvBtnInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
