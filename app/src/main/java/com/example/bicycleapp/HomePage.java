@@ -57,7 +57,7 @@ public class HomePage extends AppCompatActivity {
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
     private int stationNumber;
-    private int bicycleNumber;
+    public int bicycleNumber;
     private int passInt;
 
     @Override
@@ -361,7 +361,9 @@ public class HomePage extends AppCompatActivity {
     }
     private void goToOnRide(){
         Intent intent10 = new Intent(HomePage.this,com.example.bicycleapp.OnRide.class);
+        intent10.putExtra("BNO", bicycleNumber);
         startActivity(intent10);
+        finish();
     }
 
 
