@@ -234,7 +234,7 @@
             android:background="@drawable/textview_background"
             android:gravity="end"
             android:padding="8dp"
-            android:text="Charge Value"
+            android:text="Rs 100.00"
             android:textColor="@color/textPrimary"
             android:textSize="18sp" />
 

@@ -84,10 +84,12 @@ public class OnRide extends AppCompatActivity {
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
 
-    private String formattedTime;
+    private String formattedTime1;
+    private String formattedTime2;
     private String currentTime;
     private int stationNumber;
-    private int bicycleNumber;
+    private int bicycleNO;// = getIntent().getIntExtra("BNO", 0);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,20 +97,21 @@ public class OnRide extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_on_ride);
 
+        bicycleNO = getIntent().getIntExtra("BNO", 0);
+
         initializeUI();
         initializeFirebase();
-        retrieveCurrentStatesData();
+        retrieveRideStartData();
 
         // Initialize SharedPreferences
-        sharedPreferences = getSharedPreferences("RideData", MODE_PRIVATE);
-        editor = sharedPreferences.edit();
+        initializeSharedPreference();
 
         // Initialize location
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         // Initialize LocationRequest and LocationCallback for periodic updates
         locationRequest = LocationRequest.create();
         locationRequest.setInterval(10000); // 10 seconds
-        locationRequest.setFastestInterval(5000); // 5 seconds
+        locationRequest.setFastestInterval(4000); // 4 seconds
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         startLocationProcess();
@@ -154,6 +157,7 @@ public class OnRide extends AppCompatActivity {
                 intentIntegrator.setPrompt("Scanning lock QR");
                 intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
                 intentIntegrator.initiateScan();
+
             }
         });
 
@@ -161,6 +165,7 @@ public class OnRide extends AppCompatActivity {
         btnBackToMainPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                endRideAndClearData(); // Clear ride data
                 Intent intent11 = new Intent(OnRide.this,com.example.bicycleapp.Payment.class);
                 startActivity(intent11);
                 finish();
@@ -183,8 +188,8 @@ public class OnRide extends AppCompatActivity {
         userID = fAuth.getCurrentUser().getUid();
     }
 
-    // Retrieve current states data from Firebase Firestore
-    private void retrieveCurrentStatesData() {
+    // Retrieve ride start time and start station data from Firebase Firestore
+    private void retrieveRideStartData() {
         DocumentReference docRef1 = fStore.collection("Current states").document("Bicycle1");
         docRef1.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
@@ -200,19 +205,19 @@ public class OnRide extends AppCompatActivity {
                     String startStation = value.getString("Start station");
                     tvStart.setText(startStation);
 
-                    // Store start station in SharedPreferences
+                    // Store startStation in SharedPreferences
                     editor.putString("startStation", startStation);
 
-                    // Handle Timestamp fields
+                    // Handle Timestamp field
                     Timestamp rideStartTimeStamp = value.getTimestamp("Ride start time");
                     if (rideStartTimeStamp != null) {
                         Date rideStartTime = rideStartTimeStamp.toDate();
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-                        formattedTime = sdf.format(rideStartTime);
-                        tvStartTime.setText(formattedTime);
+                        formattedTime1 = sdf.format(rideStartTime);
+                        tvStartTime.setText(formattedTime1);
 
                         // Store formatted time in SharedPreferences
-                        editor.putString("formattedTime", formattedTime);
+                        editor.putString("formattedTime", formattedTime1);
                     }
                     editor.apply();
                 } else {
@@ -221,6 +226,46 @@ public class OnRide extends AppCompatActivity {
             }
         });
     }
+
+    // Retrieve ride end time and end station data from Firebase Firestore
+    private void retrieveRideEndData() {
+        DocumentReference docRef5 = fStore.collection("Current states").document("Bicycle1");
+        docRef5.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.e(TAG, "Error retrieving document: ", error);
+                    return;
+                }
+
+                // Get end station and time
+                if (value != null && value.exists()) {
+                    // Handle String fields
+                    String startStation = value.getString("End station");
+                    tvEnd.setText(startStation);
+
+                    // Store startStation in SharedPreferences
+                    editor.putString("endStation", startStation);
+
+                    // Handle Timestamp field
+                    Timestamp rideEndTimeStamp = value.getTimestamp("Ride end time");
+                    if (rideEndTimeStamp != null) {
+                        Date rideStartTime = rideEndTimeStamp.toDate();
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                        formattedTime2 = sdf.format(rideStartTime);
+                        tvEndTime .setText(formattedTime2);
+
+                        // Store formatted time in SharedPreferences
+                        editor.putString("formattedTime", formattedTime2);
+                    }
+                    editor.apply();
+                } else {
+                    Log.d(TAG, "Document does not exist or is empty");
+                }
+            }
+        });
+    }
+
 
     //handle QR code result
     @Override
@@ -308,12 +353,15 @@ public class OnRide extends AppCompatActivity {
 
         btnParkDoorScan.setVisibility(View.GONE);
         btnParkLockScan.setVisibility(View.VISIBLE);
-        tvBtnInfo.setText("Scan the QR on bicycle\nto end ride");
+        tvBtnInfo.setText("Scan the QR on bicycle\nafter park");
+
     }
 
 
     // Update firestore station
     private void updateFirestoreStation(String value) {
+
+        retrieveRideEndData();
 
         Map<String, Object> stationData = new HashMap<>();
         stationData.put("Availability", true);
@@ -326,7 +374,11 @@ public class OnRide extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void unused) {
                         Toast.makeText(OnRide.this, "Station " + 2 + " updated successfully", Toast.LENGTH_SHORT).show();
-                        endRideAndClearData(); // Ensure this method is correctly called here
+                        tvRideOn.setText("Ride Ended");
+                        btnBackToMainPage.setVisibility(View.VISIBLE);
+                        btnParkLockScan.setVisibility(View.GONE);
+                        tvBtnInfo.setText("Ride ended successfully");
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -363,6 +415,13 @@ public class OnRide extends AppCompatActivity {
         //finish();
     }
 
+    // Initialize SharedPreferences
+    private void initializeSharedPreference(){
+        sharedPreferences = getSharedPreferences("RideData", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        Toast.makeText(OnRide.this, "SharedPreferences created", Toast.LENGTH_SHORT).show();
+    }
+
     private void clearSharedPreferences() {
         // Initialize SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("RideData", MODE_PRIVATE);
@@ -374,6 +433,14 @@ public class OnRide extends AppCompatActivity {
 
         // Notify the user or handle further operations if needed
         Toast.makeText(OnRide.this, "SharedPreferences cleared", Toast.LENGTH_SHORT).show();
+    }
+
+    // Method to refresh or clear shared memory
+    private void refreshSharedMemory() {
+        // Clear SharedPreferences data
+        editor.clear();
+        editor.apply();
+        Log.d(TAG, "Shared memory has been cleared");
     }
 
 
