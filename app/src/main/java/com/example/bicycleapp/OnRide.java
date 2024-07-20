@@ -104,8 +104,7 @@ public class OnRide extends AppCompatActivity {
         retrieveRideStartData();
 
         // Initialize SharedPreferences
-        sharedPreferences = getSharedPreferences("RideData", MODE_PRIVATE);
-        editor = sharedPreferences.edit();
+        initializeSharedPreference();
 
         // Initialize location
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -158,6 +157,7 @@ public class OnRide extends AppCompatActivity {
                 intentIntegrator.setPrompt("Scanning lock QR");
                 intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
                 intentIntegrator.initiateScan();
+
             }
         });
 
@@ -353,7 +353,8 @@ public class OnRide extends AppCompatActivity {
 
         btnParkDoorScan.setVisibility(View.GONE);
         btnParkLockScan.setVisibility(View.VISIBLE);
-        tvBtnInfo.setText("Scan the QR on bicycle\nto end ride");
+        tvBtnInfo.setText("Scan the QR on bicycle\nafter park");
+
     }
 
 
@@ -377,6 +378,7 @@ public class OnRide extends AppCompatActivity {
                         btnBackToMainPage.setVisibility(View.VISIBLE);
                         btnParkLockScan.setVisibility(View.GONE);
                         tvBtnInfo.setText("Ride ended successfully");
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -413,6 +415,13 @@ public class OnRide extends AppCompatActivity {
         //finish();
     }
 
+    // Initialize SharedPreferences
+    private void initializeSharedPreference(){
+        sharedPreferences = getSharedPreferences("RideData", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        Toast.makeText(OnRide.this, "SharedPreferences created", Toast.LENGTH_SHORT).show();
+    }
+
     private void clearSharedPreferences() {
         // Initialize SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("RideData", MODE_PRIVATE);
@@ -424,6 +433,14 @@ public class OnRide extends AppCompatActivity {
 
         // Notify the user or handle further operations if needed
         Toast.makeText(OnRide.this, "SharedPreferences cleared", Toast.LENGTH_SHORT).show();
+    }
+
+    // Method to refresh or clear shared memory
+    private void refreshSharedMemory() {
+        // Clear SharedPreferences data
+        editor.clear();
+        editor.apply();
+        Log.d(TAG, "Shared memory has been cleared");
     }
 
 
