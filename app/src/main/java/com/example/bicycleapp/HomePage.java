@@ -154,9 +154,9 @@ public class HomePage extends AppCompatActivity {
                 state = QR_Validity(QR_Value);
                 if (state) {    // If QR code is valid
                     // Send data into firebase
-                    updateFirebaseStations(QR_Value);   //Update station
+                    //updateFirebaseStations(QR_Value);   //Update station
                     updateFirebaseRealtimeDatabaseFromApp(QR_Value);   //Update realtime database
-                    updateFirebaseCurrentStates(QR_Value);  //Update current states
+                    //updateFirebaseCurrentStates(QR_Value);  //Update current states
                     //startLocationUpdates(); // Start location updates
                     getCurrentTime(); // Update start time
 
@@ -164,7 +164,7 @@ public class HomePage extends AppCompatActivity {
                     new Handler().postDelayed(() -> {
                         // Call your method here after 5 seconds
                         goToOnRide();
-                    }, 5000); // 5000 milliseconds = 5 seconds
+                    }, 3000); // 5000 milliseconds = 5 seconds
                 } else {
                     Toast.makeText(HomePage.this, "Invalid QR code", Toast.LENGTH_SHORT).show();
                 }
@@ -197,16 +197,18 @@ public class HomePage extends AppCompatActivity {
 
     // Update realtime database from mobile app
     private void updateFirebaseRealtimeDatabaseFromApp(String value) {
-
         // Update the station value based on station number (directly update Station1 or Station2)
-        String stationId = "Station" + passInt;
+
+        int passIntlock = Character.getNumericValue(value.charAt(3)); // Extract bicycle number from QR code
+
+        String stationId = "Station" + passIntlock;
 
         int newValue = 0; // Replace with your logic to determine the new value (e.g., 0 for no bicycles)
         fDatabase.getReference().child(stationId).setValue(newValue);  // No "Stations" node
     }
 
     // Update firebase Station
-    private void updateFirebaseStations(String value) {
+    /*private void updateFirebaseStations(String value) {
 
         // Create a new station object with fields
         Map<String, Object> stationData = new HashMap<>();
@@ -257,7 +259,7 @@ public class HomePage extends AppCompatActivity {
                         Toast.makeText(HomePage.this, "Error updating current states: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
+    }*/
 
     // Method to start location updates
     private void startLocationUpdates() {
@@ -330,7 +332,7 @@ public class HomePage extends AppCompatActivity {
         Map<String, Object> timeData = new HashMap<>();
         timeData.put("Ride start time", timestamp);
         fStore.collection("Current states")
-                .document("Bicycle"+bicycleNumber)
+                .document("Bicycle"+1)
                 .update(timeData)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

@@ -30,6 +30,9 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.util.HashMap;
+import java.util.Map;
+
 // This is the Home page
 
 public class Payment extends AppCompatActivity {
@@ -43,6 +46,8 @@ public class Payment extends AppCompatActivity {
     private boolean state;
     private FirebaseDatabase fDatabase;
     public int StartStationNumber;
+    int bicycleNum;
+    int passInt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -214,6 +219,8 @@ public class Payment extends AppCompatActivity {
                     // Send data into firebase
                     //updateFirebaseStations(QR_Value);   //Update station
                     updateFirebaseRealtimeDatabaseFromApp(QR_Value);   //Update realtime database
+                    updateFirebaseCurrentStates(QR_Value);
+                    updateFirebaseStations(QR_Value);
                     //updateFirebaseCurrentStates(QR_Value);  //Update current states
                     //startLocationUpdates(); // Start location updates
                     //getCurrentTime(); // Update start time
@@ -281,5 +288,59 @@ public class Payment extends AppCompatActivity {
                 });
     }
 
+    // Update firebase Current states (Station number and userID)
+    private void updateFirebaseCurrentStates(String value) {
+
+        passInt = Character.getNumericValue(value.charAt(2)); // Extract bicycle number from QR code
+
+        // Create a new object with fields
+        Map<String, Object> currentStatesData = new HashMap<>();
+        String st = "Station"+passInt;
+        currentStatesData.put("Start station", st);
+        currentStatesData.put("User ID", userID);
+
+        // Update the document in Firestore
+        fStore.collection("Current states")
+                .document("Bicycle1")
+                .update(currentStatesData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(Payment.this, "Current states updated successfully", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(Payment.this, "Error updating current states: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    // Update firebase Station
+    private void updateFirebaseStations(String value) {
+
+        // Create a new station object with fields
+        Map<String, Object> stationData = new HashMap<>();
+        stationData.put("Availability", false);
+        stationData.put("Bicycle count", 0);
+
+        // Update the document in Firestore based on station number
+        fStore.collection("Stations")
+                .document("Station" + passInt)
+                .update(stationData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(Payment.this, "Station " + passInt + " updated successfully", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(Payment.this, "Error updating station: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 
 }

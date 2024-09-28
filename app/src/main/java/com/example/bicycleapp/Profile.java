@@ -126,6 +126,15 @@ public class Profile extends AppCompatActivity {
         }
     });
 
+    btnSettings.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent20 = new Intent(com.example.bicycleapp.Profile.this,com.example.bicycleapp.ContactUs.class);
+            startActivity(intent20);
+            finish();
+        }
+    });
+
     btnNotifi.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
