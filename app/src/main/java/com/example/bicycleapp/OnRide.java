@@ -41,7 +41,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -89,6 +92,7 @@ public class OnRide extends AppCompatActivity {
     private String currentTime;
     private int stationNumber;
     private int bicycleNO;// = getIntent().getIntExtra("BNO", 0);
+    int passInt1;
 
 
     @Override
@@ -157,6 +161,7 @@ public class OnRide extends AppCompatActivity {
                 intentIntegrator.setPrompt("Scanning lock QR");
                 intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
                 intentIntegrator.initiateScan();
+                UpdateEndTime();
 
             }
         });
@@ -242,7 +247,7 @@ public class OnRide extends AppCompatActivity {
                 if (value != null && value.exists()) {
                     // Handle String fields
                     String startStation = value.getString("End station");
-                    tvEnd.setText(startStation);
+                    //tvEnd.setText(startStation);
 
                     // Store startStation in SharedPreferences
                     editor.putString("endStation", startStation);
@@ -291,6 +296,14 @@ public class OnRide extends AppCompatActivity {
 
                         if (state2){
                             updateFirestoreStation(QR_Value);
+                            //updateFirebaseRealtimeDatabaseFromApp(QR_Value);
+                            updateFirebaseRealtimeDatabaseFromApp2(QR_Value);
+
+
+                            setEndStation();
+
+                            tvRideCost.setText("Rs 50.00");
+                            tvTotalCost.setText("Rs 150.00");
                         }else {
                             Toast.makeText(OnRide.this, "Invalid lock QR code", Toast.LENGTH_SHORT).show();
                         }
@@ -299,6 +312,47 @@ public class OnRide extends AppCompatActivity {
                 Toast.makeText(this, "Scan failed!", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    // Update realtime database from mobile app
+    private void updateFirebaseRealtimeDatabaseFromApp(String value) {
+        // Extract the 4th character from passInt
+
+        passInt1 = Character.getNumericValue(value.charAt(3)); // Extract bicycle number from QR code
+
+        // Determine the station ID based on the 4th character
+        String stationId = "Station" + passInt1;
+
+        // Set the new value (e.g., 0 for no bicycles)
+        int newValue = 0;
+        fDatabase.getReference().child(stationId).setValue(newValue);
+    }
+    
+    // Without IR sensors
+    private void updateFirebaseRealtimeDatabaseFromApp2(String value) {
+        // Extract the 4th character from passInt
+        passInt1 = Character.getNumericValue(value.charAt(3)); // Extract bicycle number from QR code
+
+        // Determine the station ID based on the 4th character
+        String stationId = "Station" + passInt1;
+
+        // Read the current value from Firebase
+        fDatabase.getReference().child(stationId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int currentValue = dataSnapshot.getValue(Integer.class);
+
+                // Set the new value based on the current value
+                int newValue = (currentValue == 0) ? 1 : 0;
+                fDatabase.getReference().child(stationId).setValue(newValue);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Handle errors here
+                Log.e("Firebase", "Failed to read data: " + databaseError.getMessage());
+            }
+        });
     }
 
 
@@ -576,6 +630,13 @@ public class OnRide extends AppCompatActivity {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         currentTime = localDateTime.format(formatter);
     }
+    //getEndTime
+    private void getEndTime(){
+        LocalDateTime localDateTime = LocalDateTime.now();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        currentTime = localDateTime.format(formatter);
+    }
 
     //delay run method to check missing riders
     private void scheduleMethodWithDelay(long delayMillis) {
@@ -662,6 +723,61 @@ public class OnRide extends AppCompatActivity {
                 loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(loginIntent);
                 finish(); // Close HomePage
+            }
+        });
+    }
+
+    //End station timestamp update
+    private void UpdateEndTime() {
+        Timestamp timestamp = Timestamp.now();    // Get current timestamp
+        Map<String, Object> timeData = new HashMap<>();
+        timeData.put("Ride end time", timestamp);
+        fStore.collection("Current states")
+                .document("Bicycle"+1)
+                .update(timeData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(OnRide.this, "End time updated successfully", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(OnRide.this, "Error updating current time: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void setEndStation(){
+        // Get a reference to the Bicycle1 document
+        DocumentReference docRef6 = fStore.collection("Current states").document("Bicycle1");
+
+// Retrieve the document and check the value of the endstation field
+        docRef6.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    // Get the value
+                    String endStation = documentSnapshot.getString("Start station");
+
+                    // Check if the value is Station1 or Station2
+                    if ("Station1".equals(endStation)) {
+                        tvEnd.setText("Station2");
+                    } else if ("Station2".equals(endStation)) {
+                        tvEnd.setText("Station1");
+                    } else {
+                        // Handle the case where it's neither
+                        Log.d("FirebaseCheck", "Endstation is neither Station1 nor Station2");
+                    }
+                } else {
+                    Log.d("FirebaseCheck", "Document does not exist");
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("FirebaseCheck", "Error fetching document", e);
             }
         });
     }
