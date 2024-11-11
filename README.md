@@ -78,17 +78,6 @@ This animation showcases the station structure and how bicycles are managed, inc
 
 
 
-
-
-
-
-
-
-
-
-https://github.com/user-attachments/assets/e9e99b21-89d8-40aa-8252-8158e81802dd
-
-
 ---
 
 ## 🚀 **Future Enhancements**
