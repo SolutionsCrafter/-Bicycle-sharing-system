@@ -1,8 +1,7 @@
 # 🚲 **Cycle Share**
 
-![over](https://github.com/user-attachments/assets/04be0d5f-4f57-4e0e-ac60-37a1690967d8)
-
 **Cycle Share** is a mobile application designed to provide an eco-friendly and cost-effective bicycle-sharing solution for underserved or rural areas with limited public transportation options. The app promotes health, reduces emissions, and offers accessible mobility to individuals who may not have private transportation.
+![over](https://github.com/user-attachments/assets/04be0d5f-4f57-4e0e-ac60-37a1690967d8)
 
 ---
 
@@ -46,9 +45,6 @@
 
 The Cycle Share app is designed with a **client-server** architecture:
 
-![wire](https://github.com/user-attachments/assets/64b711bc-17bd-42d5-9234-7d9c72ae68cd)
-
-
 - **Mobile App**:
   - User interface and functionalities for ride management, QR code scanning, and tracking.
 - **Firebase**:
@@ -65,6 +61,22 @@ The Cycle Share app is designed with a **client-server** architecture:
 3. **Location Tracking**: The app tracks the bicycle's location during the ride.
 4. **End of Ride**: At the destination, users scan the QR code to enter the station. The IR sensor detects bicycle parking, and the system locks the bicycle.
 5. **Data Syncing & Billing**: All ride data is synced with Firebase to maintain records and update real-time statuses. Once the ride is completed, the system issues a bill based on the duration and distance traveled.
+
+---
+
+## 📐 **Visual Insights**
+
+To give a clearer picture of the app flow and station setup, here are some visual representations:
+
+### 📱 App Wire Diagram
+The following wire diagram illustrates the user interface flow of the Cycle Share app, helping users understand the app's key screens and navigation.
+
+ ![wire](https://github.com/user-attachments/assets/64b711bc-17bd-42d5-9234-7d9c72ae68cd)
+
+### 🛠 Station Structure Animation
+This animation showcases the station structure and how bicycles are managed, including access points, QR code scanning locations, and the sensor setup for parking detection.
+
+![Station Structure Animation](assets/station-structure-animation.gif) <!-- Add the actual path to your animation file, ideally a .gif -->
 
 ---
 
