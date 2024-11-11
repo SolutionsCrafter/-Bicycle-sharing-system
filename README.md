@@ -92,18 +92,4 @@ https://github.com/user-attachments/assets/e9e99b21-89d8-40aa-8252-8158e81802dd
 
 ---
 
-## 🤝 **Contributing**
 
-Contributions are welcome! Feel free to open issues or submit pull requests to help improve Cycle Share.
-
-1. **Fork** the repository.
-2. **Create** your feature branch (`git checkout -b feature/NewFeature`).
-3. **Commit** your changes (`git commit -m 'Add new feature'`).
-4. **Push** to the branch (`git push origin feature/NewFeature`).
-5. **Open** a pull request.
-
----
-
-## 📄 **License**
-
-Distributed under the MIT License. See `LICENSE` for more information.
