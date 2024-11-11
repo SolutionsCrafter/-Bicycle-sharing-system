@@ -76,7 +76,6 @@ The following wire diagram illustrates the user interface flow of the Cycle Shar
 ### 🛠 Station Structure Animation
 This animation showcases the station structure and how bicycles are managed, including access points, QR code scanning locations, and the sensor setup for parking detection.
 
-![Station Structure Animation](assets/station-structure-animation.gif) <!-- Add the actual path to your animation file, ideally a .gif -->
 
 
 https://github.com/user-attachments/assets/e9e99b21-89d8-40aa-8252-8158e81802dd
