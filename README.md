@@ -31,7 +31,7 @@
 
 ## 🛠 **Technologies Used**
 
-![Android](https://img.shields.io/badge/Android-Kotlin-blue)
+![Android](https://img.shields.io/badge/Android-Java-blue)
 ![Firebase](https://img.shields.io/badge/Firebase-Authentication%20%7C%20Firestore%20%7C%20Realtime%20Database-orange)
 ![ESP32](https://img.shields.io/badge/Hardware-ESP32-yellow)
 
