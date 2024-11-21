@@ -2,8 +2,8 @@
 #include <FirebaseESP32.h>
 #include <ESP32Servo.h>
 
-#define WIFI_SSID "Hiru"
-#define WIFI_PASSWORD "1234hiru"
+#define WIFI_SSID "User_Name"
+#define WIFI_PASSWORD "Password"
 
 // Define GPIO pins
 #define lock1Pin 18
